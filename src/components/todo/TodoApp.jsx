@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BrowserRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useNavigate, useParams, Link } from 'react-router-dom'
 import './TodoApp.css'
 
 export default function TodoApp() {
@@ -7,10 +7,12 @@ export default function TodoApp() {
     <div className='TodoApp'>
       <BrowserRouter>
         <Routes>
-        <Route path='/' element={<LoginComponent />}></Route>
-          <Route path='/login' element={<LoginComponent />}></Route>
-          <Route path='/welcome/:username' element={<WelcomeComponent />}></Route>
-          <Route path='*' element={<ErrorComponent />}></Route>
+        <Route path='/' element={<LoginComponent />} />
+          <Route path='/login' element={<LoginComponent />} />
+          <Route path='/welcome/:username' element={<WelcomeComponent />} />
+          <Route path='/todos' element={<ListTodosComponent />} />
+
+          <Route path='*' element={<ErrorComponent />} />
         </Routes>
       </BrowserRouter>
     </div>
@@ -70,7 +72,9 @@ function WelcomeComponent() {
   return(
     <div className='Welcome'>
       <h1>Welcome {username}</h1>
-      <div>Welcome Component</div>
+      <div>
+        Your todos. <Link to='/todos'>Go here</Link>
+      </div>
     </div>
   )
 }
@@ -79,6 +83,50 @@ function ErrorComponent() {
   return(
     <div className='Error'>
       <h1>404 Error</h1>
+    </div>
+  )
+}
+
+function ListTodosComponent() {
+
+  const today = new Date()
+  const targetDate = new Date(today.getFullYear()+12, today.getMonth(), today.getDay())
+
+  const todos = [
+    {id: 1, descrpition: 'Learn AWS', done: false, targetDate:targetDate},
+    {id: 2, descrpition: 'Learn Full Stack Development', done: false, targetDate:targetDate},
+    {id: 3, descrpition: 'Learn DevOps', done: false, targetDate:targetDate}
+  ]
+
+  return(
+    <div className='ListTodos'>
+      <h1>Things You want to do!</h1>
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <td>Id</td>
+              <td>Descrpition</td>
+              <td>Is Done?</td>
+              <td>Target Date</td>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              todos.map(
+                todo => (
+                  <tr key={todo.id}>
+                    <td>{todo.id}</td>
+                    <td>{todo.descrpition}</td>
+                    <td>{todo.done.toString()}</td>
+                    <td>{todo.targetDate.toLocaleDateString()}</td>
+                  </tr>
+                )
+              )
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
